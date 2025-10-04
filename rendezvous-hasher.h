@@ -51,7 +51,7 @@
 //
 // If you want to use the built-in hash functions, you need to also
 //
-//    #define HASHMAP_IMPLEMENTATION
+//    #define RENDEZVOUS_HASHER_HASHES
 //
 // before including the header.
 //
