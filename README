@@ -1,0 +1,91 @@
+rendezvous-hasher.h
+===================
+
+Header-only, dependency-free implementation of Rendezvous Hashing
+in C99 (a.k.a. Highest Random Weight hashing).
+
+Author:  Giovanni Santini
+Mail:    giovanni.santini@proton.me
+License: MIT
+
+
+Documentation
+-------------
+
+Rendezvous Hashing is a technique for consistently mapping keys to
+a set of nodes (or servers) with minimal disruption when nodes are
+added or removed.  It works by assigning each (key, node) pair a
+deterministic "score" and selecting the node with the highest score
+for each key. This approach is widely used in distributed systems,
+load balancers, and caching systems (e.g., for partitioning keys
+across servers) due to its simplicity and excellent balance
+properties.
+
+Features:
+ - Pure C99, header-only (no external dependencies)
+ - Deterministic and reproducible hash assignment
+ - Minimal key movement on node changes
+ - Suitable for both static and dynamic node sets
+
+
+Usage
+-----
+
+Do this:
+
+  #define RENDEZVOUS_HASHER_IMPLEMENTATION
+
+before you include this file in *one* C or C++ file to create the
+implementation.
+
+i.e. it should look like this:
+
+  #include ...
+  #include ...
+  #include ...
+  #define RENDEZVOUS_HASHER_IMPLEMENTATION
+  #include "rendezvous-hasher.h"
+
+If you want to use the built-in hash functions, you need to also
+
+   #define HASHMAP_IMPLEMENTATION
+
+before including the header.
+
+You can tune the library by #defining certain values. See the
+"Config" comments under "Configuration" below.
+
+To start, you need to initialize the hasher with the init function.
+
+   RendezvousHasher rh;
+   rendezvous_init(&rh);
+
+You can add and remove nodes in the hasher:
+
+   RendezvousHasherId node1_id = 6969;
+   rendezvous_add_node(&rh, node1_id);
+   rendezvous_remove_node(&rh, node1_id);
+
+And get the node assigned to an item id:
+
+   RendezvousHasherId item_id = 6969;
+   RendezvousHasherHash chosen_node_id; // This will be set below
+   rendezvous_get_node_for(&rh, item_id, &chosen_node_id);
+
+Remember to free all allocated memory.
+
+   rendezvous_free(&rh);
+
+
+Code
+----
+
+The official git repository of rendezvous-hasher.h is hosted at:
+
+    https://github.com/San7o/rendezvous-hasher.h
+
+This is part of a bigger collection of header-only C99 libraries
+called "micro-headers", contributions are welcome:
+
+    https://github.com/San7o/micro-headers
+
