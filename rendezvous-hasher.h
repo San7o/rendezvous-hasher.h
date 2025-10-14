@@ -93,8 +93,8 @@
 //     https://github.com/San7o/micro-headers
 //
 
-#ifndef _RENDEZVOUS_HASHER_H_
-#define _RENDEZVOUS_HASHER_H_
+#ifndef RENDEZVOUS_HASHER
+#define RENDEZVOUS_HASHER
 
 #define RENDEZVOUS_HASHER_MAJOR 0
 #define RENDEZVOUS_HASHER_MINOR 1
@@ -144,6 +144,13 @@ extern "C" {
   #define RENDEZVOUS_HASHER_FREE free
 #endif
 
+// Config: Prefix for all functions
+// For function inlining, set this to `static inline` and then define
+// the implementation in all the files
+#ifndef RENDEZVOUS_HASHER_DEF
+  #define RENDEZVOUS_HASHER_DEF extern
+#endif
+
 //
 // Types
 //
@@ -172,27 +179,33 @@ typedef struct {
 //
 
 // Initializes the Rendezvous Hasher
-int rendezvous_init(RendezvousHasher *rh);
+RENDEZVOUS_HASHER_DEF int
+rendezvous_init(RendezvousHasher *rh);
 // Free all allocated memory in the Rendezvous Hasher
-int rendezvous_free(RendezvousHasher *rh);
+RENDEZVOUS_HASHER_DEF int
+rendezvous_free(RendezvousHasher *rh);
 
 // Add a node with [id] to the list of nodes of [rh]. O(1) time
-int rendezvous_add_node(RendezvousHasher *rh,
-                        RendezvousHasherId id);
+RENDEZVOUS_HASHER_DEF int
+rendezvous_add_node(RendezvousHasher *rh,
+                    RendezvousHasherId id);
 
 // Remove node with [id] to the list of nodes of [rh]. O(n) time
-int rendezvous_remove_node(RendezvousHasher *rh,
-                           RendezvousHasherId id);
+RENDEZVOUS_HASHER_DEF int
+rendezvous_remove_node(RendezvousHasher *rh,
+                       RendezvousHasherId id);
 
 // Get the [node_id] assigned for [item_id] in [rg]
-int rendezvous_get_node_for(RendezvousHasher *rh,
-                            RendezvousHasherId item_id,
-                            RendezvousHasherId *node_id);
+RENDEZVOUS_HASHER_DEF int
+rendezvous_get_node_for(RendezvousHasher *rh,
+                        RendezvousHasherId item_id,
+                        RendezvousHasherId *node_id);
 
 #ifdef RENDEZVOUS_HASHER_HASHES
 
 // Hash function for unsigned int keys
-unsigned int rendezvous_hasher_hash_uint32(unsigned int a);
+RENDEZVOUS_HASHER_DEF unsigned int
+rendezvous_hasher_hash_uint32(unsigned int a);
 
 #endif // RENDEZVOUS_HASHER_HASHES
 
@@ -202,14 +215,14 @@ unsigned int rendezvous_hasher_hash_uint32(unsigned int a);
 
 #ifdef RENDEZVOUS_HASHER_IMPLEMENTATION
 
-int rendezvous_init(RendezvousHasher *rh)
+RENDEZVOUS_HASHER_DEF int rendezvous_init(RendezvousHasher *rh)
 {
   if (!rh) return RENDEZVOUS_HASHER_ERROR_IS_NULL;
   rh->nodes = NULL;
   return RENDEZVOUS_HASHER_OK;
 }
 
-int rendezvous_free(RendezvousHasher *rh)
+RENDEZVOUS_HASHER_DEF int rendezvous_free(RendezvousHasher *rh)
 {
   if (!rh) return RENDEZVOUS_HASHER_ERROR_IS_NULL;
 
@@ -225,8 +238,9 @@ int rendezvous_free(RendezvousHasher *rh)
   return RENDEZVOUS_HASHER_OK;
 }
 
-int rendezvous_add_node(RendezvousHasher *rh,
-                        RendezvousHasherId id)
+RENDEZVOUS_HASHER_DEF int
+rendezvous_add_node(RendezvousHasher *rh,
+                    RendezvousHasherId id)
 {
   if (!rh) return RENDEZVOUS_HASHER_ERROR_IS_NULL;
 
@@ -239,8 +253,9 @@ int rendezvous_add_node(RendezvousHasher *rh,
   return RENDEZVOUS_HASHER_OK;
 }
 
-int rendezvous_remove_node(RendezvousHasher *rh,
-                           RendezvousHasherId id)
+RENDEZVOUS_HASHER_DEF int
+rendezvous_remove_node(RendezvousHasher *rh,
+                       RendezvousHasherId id)
 {
   if (!rh) return RENDEZVOUS_HASHER_ERROR_IS_NULL;
   if (!rh->nodes) return RENDEZVOUS_HASHER_OK;
@@ -276,9 +291,10 @@ int rendezvous_remove_node(RendezvousHasher *rh,
   return RENDEZVOUS_HASHER_OK;
 }
 
-int rendezvous_get_node_for(RendezvousHasher *rh,
-                            RendezvousHasherId item_id,
-                            RendezvousHasherId *node_id)
+RENDEZVOUS_HASHER_DEF int
+rendezvous_get_node_for(RendezvousHasher *rh,
+                        RendezvousHasherId item_id,
+                        RendezvousHasherId *node_id)
 {
   if (!rh) return RENDEZVOUS_HASHER_ERROR_IS_NULL;
   if (!node_id) return RENDEZVOUS_HASHER_ERROR_ARGUMENT_NULL;
@@ -305,7 +321,8 @@ int rendezvous_get_node_for(RendezvousHasher *rh,
 
 #ifdef RENDEZVOUS_HASHER_HASHES
 
-unsigned int rendezvous_hasher_hash_uint32(unsigned int a)
+RENDEZVOUS_HASHER_DEF unsigned int
+rendezvous_hasher_hash_uint32(unsigned int a)
 {
     a = (a ^ 61) ^ (a >> 16);
     a = a + (a << 3);
@@ -323,4 +340,4 @@ unsigned int rendezvous_hasher_hash_uint32(unsigned int a)
 }
 #endif
 
-#endif // _RENDEZVOUS_HASHER_H_
+#endif // RENDEZVOUS_HASHER

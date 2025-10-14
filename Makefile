@@ -4,7 +4,7 @@
 # License: MIT
 
 #
-# Compiler files
+# Compiler flags
 #
 CFLAGS      = -Wall -Werror -Wpedantic -std=c99
 DEBUG_FLAGS = -ggdb
@@ -36,7 +36,7 @@ distclean:
 	rm -f $(OUT_NAME)
 
 $(OUT_NAME): $(OBJ)
-	$(CC) $(OBJ) $(LDFLAGS) $(CLAGS) -o $(OUT_NAME)
+	$(CC) $(OBJ) $(LDFLAGS) $(CFLAGS) -o $(OUT_NAME)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
